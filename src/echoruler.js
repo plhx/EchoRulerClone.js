@@ -353,8 +353,8 @@
                     }
 
                     // 麻痺・石化した場合は即死する
-                    if (defender.creature.effects.has(Effect.PARALYZE)
-                        || defender.creature.effects.has(Effect.STONE)
+                    if (/*defender.creature.effects.has(Effect.PARALYZE)
+                        || */defender.creature.effects.has(Effect.STONE)
                     ) {
                         defender.creature.hp = 0
                     }
@@ -1062,7 +1062,7 @@
         */
         get isDead() {
             return this.hp <= 0
-                || this.effects.has(Effect.PARALYZE)
+                //| this.effects.has(Effect.PARALYZE)
                 || this.effects.has(Effect.STONE)
         }
 
