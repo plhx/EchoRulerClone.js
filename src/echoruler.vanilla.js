@@ -58,7 +58,7 @@
         BODY_PRESS: new WeaponId('BodyPress'),
         FLARE_BLADE: new WeaponId('FlareBlade'),
     })
-})(this)
+})(globalThis)
 
 !(root => {
     const { Damage, DamageKind, Effect, Element, Targeting, Weapon, WeaponId } = root.EchoRuler
@@ -172,7 +172,7 @@
         new Weapon(WeaponId.BODY_PRESS, 'ボディプレス', 1, new Damage(100, DamageKind.MATERIAL)),
         new Weapon(WeaponId.FLARE_BLADE, 'フレアブレイド', 1, new Damage(80, DamageKind.ELEMENTAL, Element.FIRE)),
     )
-})(this)
+})(globalThis)
 
 !(root => {
     // 防具IDの定義を追加する
@@ -198,7 +198,7 @@
         STONE_BODY: new ArmorId('StoneBody'),
         ASTRAL_BODY: new ArmorId('AstralBody'),
     })
-})(this)
+})(globalThis)
 
 !(root => {
     const { Armor, ArmorId, Element } = root.EchoRuler
@@ -223,7 +223,7 @@
         new Armor(ArmorId.STONE_BODY, 'ストーンボディ', { material: 75 }),
         new Armor(ArmorId.ASTRAL_BODY, 'アストラルボディ', { material: 90 })
     )
-})(this)
+})(globalThis)
 
 !(root => {
     // クリーチャーIDの定義を追加する
@@ -291,7 +291,7 @@
         SWORD_MASTER: new CreatureId('SwordMaster'),
         RUNE_KNIGHT: new CreatureId('RuneKnight')
     })
-})(this)
+})(globalThis)
 
 !(root => {
     const { ArmorId, CreatureId, CreatureSchema, Skill, Trait, WeaponId } = root.EchoRuler
@@ -609,7 +609,7 @@
             description: '霊剣から力を引き出す才能を見出された剣士。',
         })
     )
-})(this)
+})(globalThis)
 
 !(root => {
     const { Battle, Cell, Creature, CreatureId, Element, FieldPower } = root.EchoRuler
@@ -1180,7 +1180,7 @@
         StageCreature,
         StageId,
     })
-})(this)
+})(globalThis)
 
 !(root => {
     const { Creature, CreatureId } = root.EchoRuler
@@ -1321,4 +1321,4 @@
     }
 
     Object.assign(root.EchoRuler, { Party })
-})(this)
+})(globalThis)

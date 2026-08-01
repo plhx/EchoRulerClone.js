@@ -1873,4 +1873,4 @@
         Weapon,
         WeaponId
     }
-})(this)
+})(globalThis)
