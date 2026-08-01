@@ -1,2 +1,21 @@
-src/solvers
+# macOS
 .DS_Store
+
+# Project Specific
+src/solvers
+
+# Node
+node_modules
+package-lock.json
+npm-shrinkwrap.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+bun.lock
+
+# Claude
+.claude/.prompts
+.claude/rules
+.claude/settings.json
+.claude/settings.local.json
+CLAUDE.md
