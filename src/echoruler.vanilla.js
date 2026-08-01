@@ -616,7 +616,7 @@
 
     class Stage {
         /**
-        * @type {Array<Stage>}
+        * @type {Stage[]}
         */
         static values = []
 
@@ -624,11 +624,11 @@
         * @param {Object} args
         * @param {StageId} args.stageId
         * @param {string} args.name
-        * @param {Array<Array<StageCreature>>} args.creatures
+        * @param {StageCreature[][]} args.creatures
         * @param {FieldPower} args.power
         * @param {number} args.score
-        * @param {Array<CreatureId>} args.prisoners
-        * @param {Array<StageId>} args.routes
+        * @param {CreatureId[]} args.prisoners
+        * @param {StageId[]} args.routes
         * @returns {ThisType}
         */
         constructor({ stageId, name, creatures, power, score, prisoners, routes }) {
@@ -658,7 +658,7 @@
         * @param {number} round
         * @param {Object} options
         * @param {number} options.round
-        * @param {FieldPower?} options.power
+        * @param {?FieldPower} options.power
         * @returns {Battle}
         */
         battle(round, { power } = {}) {
@@ -1187,7 +1187,7 @@
 
     class Party {
         /**
-        * @param {Array<Creature>} creatures
+        * @param {Creature[]} creatures
         */
         constructor(creatures = []) {
             this.creatures = creatures
@@ -1268,7 +1268,7 @@
 
         /**
         * 指定したエンティティIDのクリーチャーを返す。
-        * @returns {Creature?}
+        * @returns {?Creature}
         */
         get(entityId) {
             return this.creatures.find(x => x.entityId == entityId)

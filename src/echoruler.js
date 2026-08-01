@@ -38,12 +38,12 @@
     class Armor {
         /**
         * 属性距離ごとのダメージ加算倍率。
-        * @type {Array<number>}
+        * @type {number[]}
         */
         static _DAMAGE_MULTIPLIER = [0.05, 1.0, 2.0, 2.0, 1.0]
 
         /**
-        * @type {Array<Armor>}
+        * @type {Armor[]}
         */
         static values = []
 
@@ -51,9 +51,9 @@
         * @param {ArmorId} armorId
         * @param {string} name
         * @param {Object} options
-        * @param {number?} options.material
-        * @param {number?} options.magical
-        * @param {Element?} options.element
+        * @param {?number} options.material
+        * @param {?number} options.magical
+        * @param {?Element} options.element
         */
         constructor(armorId, name, { material, magical, element = null } = {}) {
             this.armorId = armorId
@@ -165,7 +165,7 @@
         /**
         * 戦闘が終了するまで実行する。
         * @param {Object} options
-        * @param {number?} options.maxTurns
+        * @param {?number} options.maxTurns
         * @param {function(...args)} options.print
         * @returns {BattleState}
         */
@@ -446,12 +446,12 @@
     */
     class BattleField {
         /**
-        * @type {Array<number>}
+        * @type {number[]}
         */
         static _DEFAULT_PRIORITY = [9, 6, 3, 1, 4, 7, 8, 5, 2, 2, 5, 8, 7, 4, 1, 3, 6, 9]
 
         /**
-        * @type {Array<Array<number>>}
+        * @type {number[][]}
         */
         static _SHORT_RANGE = [
             [5, 3, 1, 1, 3, 5, 6, 4, 2, 2, 4, 6, 7, 5, 3, 3, 5, 7],
@@ -460,7 +460,7 @@
         ]
 
         /**
-        * @type {Array<Array<number>>}
+        * @type {number[][]}
         */
         static _LONG_RANGE = [
             [3, 2, 1, 1, 2, 3, 4, 3, 2, 2, 3, 4, 5, 4, 3, 3, 4, 5],
@@ -469,7 +469,7 @@
         ]
 
         /**
-        * @type {Array<Array<number>>}
+        * @type {number[][]}
         */
         static _WIDE_RANGE = [
             [3, 2, 1, 1, 2, 3, 3, 2, 1, 1, 2, 3, 3, 2, 1, 1, 2, 3],
@@ -478,7 +478,7 @@
         ]
 
         /**
-        * @type {Array<Array<number>>}
+        * @type {number[][]}
         */
         static _PENETRATE_RANGE = [
             [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3],
@@ -487,7 +487,7 @@
         ]
 
         /**
-        * @type {Array<Array<number>>}
+        * @type {number[][]}
         */
         static _ALL_RANGE = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -497,7 +497,7 @@
 
         constructor() {
             /**
-            * @type {Array<Creature?>}
+            * @type {(?Creature)[]}
             */
             this.cells = (0).rangeExclusive(3 * 3 * 2).map(_ => null)
         }
@@ -505,7 +505,7 @@
         /**
         * 指定した陣営のクリーチャーを返す。
         * @param {Faction} faction
-        * @returns {Array<Creature>}
+        * @returns {Creature[]}
         */
         creaturesOf(faction) {
             const creatures = []
@@ -520,7 +520,7 @@
         /**
         * 指定した座標のクリーチャーを返す。
         * @param {Cell} cell
-        * @returns {Creature?}
+        * @returns {?Creature}
         */
         get(cell) {
             return this.cells[cell.index]
@@ -576,7 +576,7 @@
 
         /**
         * 戦闘フィールドに設定されたすべての行動できるクリーチャーを取得して、行動順で返す。
-        * @returns {Array<BattleQueue>}
+        * @returns {BattleQueue[]}
         */
         queue() {
             let queue = []
@@ -619,7 +619,7 @@
         * 指定した座標にいるクリーチャーの攻撃対象を優先順位付きで返す。
         * @param {Cell} cell
         * @param {Object} options
-        * @param {number?} options.chimera
+        * @param {?number} options.chimera
         * @returns {BattleTarget}
         */
         targets(cell, { chimera } = {}) {
@@ -887,7 +887,7 @@
         * 指定した陣営の重複なしのランダムな座標を返す。
         * @param {Faction} faction
         * @param {number} n
-        * @returns {Array<Cell>}
+        * @returns {Cell[]}
         */
         static samples(faction, n) {
             return (0).rangeExclusive(9).sort(_ => Math.random() - 0.5)
@@ -995,9 +995,9 @@
         /**
         * @param {CreatureId} creatureId
         * @param {Object} options
-        * @param {number?} options.entityId
-        * @param {number?} options.hp
-        * @param {Set<Effect>?} options.effects
+        * @param {?number} options.entityId
+        * @param {?number} options.hp
+        * @param {?Set<Effect>} options.effects
         */
         constructor(creatureId, { entityId, hp, effects } = {}) {
             this.creatureId = creatureId
@@ -1165,7 +1165,7 @@
     */
     class CreatureSchema {
         /**
-        * @type {Array<CreatureSchema>}
+        * @type {CreatureSchema[]}
         */
         static values = []
 
@@ -1177,10 +1177,10 @@
         * @param {number} speed
         * @param {Object} options
         * @param {number} options.size
-        * @param {Set<Skill>?} options.skills
-        * @param {Set<Trait>?} options.traits
-        * @param {string?} options.message
-        * @param {string?} options.description
+        * @param {?Set<Skill>} options.skills
+        * @param {?Set<Trait>} options.traits
+        * @param {?string} options.message
+        * @param {?string} options.description
         */
         constructor(creatureId, hp, weaponId, armorId, speed, {
             size = null,
@@ -1240,7 +1240,7 @@
         /**
         * 武器を返す。
         * @param {Object} options
-        * @param {number?} options.chimera
+        * @param {?number} options.chimera
         * @returns {Weapon}
         */
         weapon({ chimera } = {}) {
@@ -1256,7 +1256,7 @@
         * @param {Object} args
         * @param {number} value
         * @param {DamageKind} kind
-        * @param {Element?} element
+        * @param {?Element} element
         */
         constructor(value, kind, element = null) {
             if (kind == DamageKind.ELEMENTAL && !element) {
@@ -1270,9 +1270,9 @@
         /**
         * クローンを返す。
         * @param {Object} options
-        * @param {number?} options.value
-        * @param {DamageKind?} options.kind
-        * @param {Element?} options.element
+        * @param {?number} options.value
+        * @param {?DamageKind} options.kind
+        * @param {?Element} options.element
         * @returns {Damage}
         */
         clone({ value, kind, element } = {}) {
@@ -1500,12 +1500,12 @@
         static RED = new Faction(1)
 
         /**
-        * @type {Array<Faction>}
+        * @type {Faction[]}
         */
         static values = Object.freeze([Faction.BLUE, Faction.RED])
 
         /**
-        * @type {Map<Faction, Array<{x: number, y: number}>>}
+        * @type {Map<Faction, {x: number, y: number}[]>}
         */
         static _PATHS = new Map([
             [Faction.BLUE, [{ x: 0, y: 1 }, { x: 0, y: -1 }, { x: -1, y: 0 }]],
@@ -1521,7 +1521,7 @@
 
         /**
         * @param {Faction}
-        * @returns {Array<{x: number, y: number, distance: number}>}
+        * @returns {{x: number, y: number, distance: number}[]}
         */
         static paths(faction) {
             return this._PATHS.get(faction)
@@ -1552,7 +1552,7 @@
     class FieldPower {
         /**
         * 属性距離ごとのフィールドパワー加算倍率。
-        * @type {Array<number>}
+        * @type {number[]}
         */
         static _DAMAGE_MULTIPLIER = [1.0, 2.0, 4.0, 0.0, 0.5]
 
@@ -1569,8 +1569,8 @@
         /**
         * クローンを返す。
         * @param {Object} options
-        * @param {Element?} options.element
-        * @param {number?} options.value
+        * @param {?Element} options.element
+        * @param {?number} options.value
         * @returns {FieldPower}
         */
         clone({ element, value } = {}) {
@@ -1625,8 +1625,8 @@
         * @param {Object} options
         * @param {number} options.turn
         * @param {string} options.message
-        * @param {Cell?} options.attacker
-        * @param {Cell?} options.defender
+        * @param {?Cell} options.attacker
+        * @param {?Cell} options.defender
         */
         constructor({ turn, message, attacker, defender } = {}) {
             this.turn = turn
@@ -1768,7 +1768,7 @@
     */
     class Weapon {
         /**
-        * @type {Array<Weapon>}
+        * @type {Weapon[]}
         */
         static values = []
 
@@ -1778,8 +1778,8 @@
         * @param {number} range
         * @param {Damage} damage
         * @param {Object} options
-        * @param {Targeting?} options.targeting
-        * @param {Set<Effect>?} options.effects
+        * @param {?Targeting} options.targeting
+        * @param {?Set<Effect>} options.effects
         */
         constructor(weaponId, name, range, damage, { targeting, effects } = {}) {
             this.weaponId = weaponId
