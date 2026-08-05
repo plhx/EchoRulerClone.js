@@ -395,7 +395,7 @@
             description: '獅子の体に竜の首と山羊の首を持つ、合成魔獣。',
         }),
         new CreatureSchema(CreatureId.SLIME, 120, WeaponId.ACID_CRAPE, ArmorId.VISCOUS_LIQUID, 8, {
-            targetraitsting: new Set([Trait.NERVELESS]),
+            traits: new Set([Trait.NERVELESS]),
             message: '{name}は強力な酸を分泌する！',
             description: '物理攻撃の効かない不定形生物。',
         }),
@@ -445,7 +445,7 @@
         }),
         new CreatureSchema(CreatureId.FALCON, 50, WeaponId.CLAW, ArmorId.NONE, 56, {
             skills: new Set([Skill.FREE_MOVE]),
-            traits: new Set([Skill.FLYING]),
+            traits: new Set([Trait.FLYING]),
             message: '{name}が急降下する！',
             description: '大空から獲物を狙う素早い鷹。',
         }),
@@ -580,7 +580,7 @@
         }),
         new CreatureSchema(CreatureId.ANGEL, 100, WeaponId.HOLY_LIGHT, ArmorId.NONE, 16, {
             skills: new Set([Skill.FREE_MOVE]),
-            traits: new Set([Skill.FLYING]),
+            traits: new Set([Trait.FLYING]),
             message: '{name}は聖なる裁きを下す！',
             description: '神霊の御使い。',
         }),

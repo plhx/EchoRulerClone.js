@@ -82,30 +82,25 @@
         * @returns {Damage}
         */
         reducedDamage(damage) {
+            let value = damage.value
             if (damage.kind == DamageKind.MATERIAL) {
                 // 物理攻撃なら物理攻撃の軽減率を適用する
-                return damage.clone({
-                    value: Math.floor(damage.value * Math.max(100 - this.material, 0) / 100)
-                })
+                value *= Math.max(100 - this.material, 0) / 100
             } else if (damage.kind == DamageKind.MAGICAL) {
                 // 魔法攻撃なら魔法攻撃の軽減率を適用する
-                return damage.clone({
-                    value: Math.floor(damage.value * Math.max(100 - this.magical, 0) / 100)
-                })
+                value *= Math.max(100 - this.magical, 0) / 100
             } else if (damage.kind == DamageKind.ELEMENTAL) {
                 // 属性攻撃なら眷属のダメージ補正を適用する
                 if (damage.element != null && this.element != null) {
                     const distance = this.element.distanceFrom(damage.element)
-                    return damage.clone({
-                        value: Math.floor(damage.value * Armor._DAMAGE_MULTIPLIER[distance])
-                    })
+                    value *= Armor._DAMAGE_MULTIPLIER[distance]
                 }
             } else if (damage.kind == DamageKind.SPECIAL) {
                 // 特殊な攻撃なのでここでは軽減しない
             }
 
-            // それ以外はダメージ軽減はなし
-            return damage.clone()
+            // 端数切捨ては全ての軽減率を適用した後に1回だけ行う
+            return damage.clone({ value: Math.floor(value) })
         }
 
         /**
@@ -409,8 +404,8 @@
                 multiplier *= 0.05
             }
 
-            // 最終ダメージは端数切捨て
-            return baseDamage.clone({ value: Math.floor(baseDamage.value * multiplier) })
+            // 端数切捨ては防具の軽減率まで適用した後(Armor.reducedDamage)に1回だけ行う
+            return baseDamage.clone({ value: baseDamage.value * multiplier })
         }
 
         /**
@@ -674,20 +669,22 @@
             }
 
             // ここでtargetsには優先順位順になった敵が格納されている
-            // 実際の射程内に敵がいないなら射程を拡張しつつ実際の対象を抽出する
+            // 元実装ではここから、盤面上に実在する最も近い敵の優先度(nearestPriority)を求め、
+            // 射程3以上(またはFreeMove)の攻撃は実効射程にnearestPriority分をそのまま加算し、
+            // それ未満の近接攻撃は最も近いランクの敵のみを対象にする
             let targetsInRange = []
-            let effectiveRange = cell.faction == Faction.BLUE
+            const baseRange = cell.faction == Faction.BLUE
                 ? range - (cell.x - 3)
                 : range - (2 - cell.x)
-            if (effectiveRange > 0) {
-                for (let i = 0; i < 7 && targetsInRange.length == 0; i++) {
-                    // もともとの仕様で一番優先度の高いターゲットの場所に攻撃対象が存在しないなら攻撃範囲が1増加する
-                    if (i == 0 && isLongRange && !targets.some(x => x.targetPriority == 1)) {
-                        effectiveRange++
-                    }
-
-                    // 敵陣の実効的な射程で対象を算出する
-                    targetsInRange = targets.filter(x => x.targetPriority <= effectiveRange + i)
+            if (baseRange > 0 && targets.length > 0) {
+                const nearestPriority = Math.min(...targets.map(x => x.targetPriority))
+                if (range >= 3) {
+                    // 中〜遠距離: 最も近い敵までの距離をそのまま実効射程に加算する(対象の種別は問わない)
+                    const effectiveRange = baseRange + nearestPriority - 1
+                    targetsInRange = targets.filter(x => x.targetPriority <= effectiveRange)
+                } else {
+                    // 近接: 最も近いランクの敵のみが対象になる
+                    targetsInRange = targets.filter(x => x.targetPriority == nearestPriority)
                 }
             }
 
@@ -1101,9 +1098,10 @@
                     Effect.STONE
                 ].includes(effect)
             } else if (this.schema.traits.has(Trait.LARGE)) {
+                // 元実装ではChBody(定数)への添字アクセスというバグにより
+                // SLOW・STUNへの耐性は一度も機能していなかった(PARALYZE・STONEはバグの影響を受けていない)
+                // 本実装ではその実際の挙動を踏襲し、SLOW・STUNは耐性に含めない
                 return [
-                    Effect.SLOW,
-                    Effect.STUN,
                     Effect.PARALYZE,
                     Effect.STONE
                 ].includes(effect)
