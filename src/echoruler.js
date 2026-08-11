@@ -629,8 +629,7 @@
 
             // Skill.FREE_MOVEがあれば最低射程が3になり、遠距離攻撃扱いになる
             const range = Math.max(weapon.range, creature.schema.skills.has(Skill.FREE_MOVE) ? 3 : 1)
-            const isLongRange = weapon.targeting == Targeting.LONG_RANGE
-                || creature.schema.skills.has(Skill.FREE_MOVE)
+            const isLongRange = weapon.isLongRange || creature.schema.skills.has(Skill.FREE_MOVE)
 
             // 武器のターゲット種別と現在のY座標に応じて攻撃の優先順位テーブルを参照する
             let priority = [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -673,6 +672,9 @@
             // 射程3以上(またはFreeMove)の攻撃は実効射程にnearestPriority分をそのまま加算し、
             // それ未満の近接攻撃は最も近いランクの敵のみを対象にする
             let targetsInRange = []
+
+            // baseRangeは敵陣までの距離を引いた射程が格納されている
+            // 少なくとも敵陣に攻撃が及んでいるか(射程を延長できるか)の確認をしている
             const baseRange = cell.faction == Faction.BLUE
                 ? range - (cell.x - 3)
                 : range - (2 - cell.x)
@@ -690,15 +692,16 @@
 
             if (targetsInRange.length > 0) {
                 const highTarget = creature.schema.skills.has(Skill.HIGH_TARGET)
+                const compare = (a, b) => isLongRange
+                    ? a.compareLongRange(b, { highTarget })
+                    : a.compareShortRange(b, { highTarget })
                 if (weapon.targeting == Targeting.WIDE) {
                     // 広域は対象の優先度と同じく、X座標が同じものが対象となる
-                    const primaryTarget = [...targetsInRange]
-                        .sort((a, b) => a.compareShortRange(b, { highTarget }))[0]
+                    const primaryTarget = [...targetsInRange].sort(compare)[0]
                     targetsInRange = targets.filter(t => t.cell.x == primaryTarget.cell.x)
                 } else if (weapon.targeting == Targeting.PENETRATE) {
                     // 貫通は対象の優先度と同じく、Y座標が同じものが対象となる
-                    const primaryTarget = [...targetsInRange]
-                        .sort((a, b) => a.compareShortRange(b, { highTarget }))[0]
+                    const primaryTarget = [...targetsInRange].sort(compare)[0]
                     targetsInRange = targets.filter(t => t.cell.y == primaryTarget.cell.y)
                 } else if (weapon.targeting == Targeting.ANTI_GROUND) {
                     // 対地広域は全体が対象となる
@@ -1810,6 +1813,14 @@
                 return weapon
             }
             throw new Error(`武器が見つかりません: ${weaponId}`)
+        }
+
+        /**
+        * 長距離攻撃かどうかを判定する。
+        * @returns {boolean}
+        */
+        get isLongRange() {
+            return this.range >= 3
         }
 
         /**
